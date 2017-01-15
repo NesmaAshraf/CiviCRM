@@ -1,7 +1,6 @@
 select distinct cont.display_name As 'Contact display name' ,
-org.display_name As 'Employer organisation name', 
-count(cont.display_name) As ' Number (count) of cases'
-
+org.display_name As 'Employer organisation name',
+count(caseCont.id) As ' Number (count) of cases'
 from civicrm_contacts as cont
 
 inner join civicrm_case_contact as caseCont
@@ -10,11 +9,11 @@ on cont.id=caseCont.contact_id
 left join civicrm_relationship as relat
 on cont.id = relat.contact_id_a
 join  civicrm_contacts as org
-on org.id=relat.contact_id_b 
+on org.id=relat.contact_id_b
 
-where cont.contact_type='Individual'and
-      caseCont.case_id in(select id from crm_case where case_satus_id=1) and 
-      relat.is_active=1 and 
-      relat.relationship_type_id =(select id from civicrm_relationship_type where name_a_b='Employee of')
-  
+where cont.contact_type='Individual' 
+and caseCont.case_id in(select id from civicrm_case where case_satus_id=1)
+  and relat.is_active=1 
+  and relat.relationship_type_id =(select id from civicrm_relationship_type where name_a_b='Employee of')
+ 
 group by cont.display_name, org.display_name
